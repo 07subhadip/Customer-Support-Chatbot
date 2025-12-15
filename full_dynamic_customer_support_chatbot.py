@@ -1,4 +1,5 @@
 import os
+import time
 import streamlit as st
 from dotenv import load_dotenv
 
@@ -8,18 +9,22 @@ from langchain_core.messages import AIMessage, HumanMessage
 
 # -------------------- Setup --------------------
 load_dotenv()
-st.set_page_config(page_title="Customer Support Chatbot", page_icon="💬")
+st.set_page_config(
+    page_title="Customer Support Chatbot",
+    page_icon="💬",
+    layout="centered"
+)
 
 st.title("💬 Customer Support Chatbot")
-st.caption("Powered by LLaMA 3.1 + HuggingFace")
+st.caption("Powered by LLaMA-3.1 + HuggingFace")
 
-# -------------------- Load Model (CACHED) --------------------
+# -------------------- Load Model (cached) --------------------
 @st.cache_resource
 def load_model():
     llm = HuggingFaceEndpoint(
         repo_id="meta-llama/Llama-3.1-8B-Instruct",
         temperature=0.5,
-        max_new_tokens=512,
+        max_new_tokens=1024,
         huggingfacehub_api_token=os.getenv("HUGGINGFACEHUB_API_TOKEN"),
     )
     return ChatHuggingFace(llm=llm)
@@ -35,22 +40,23 @@ chat_template = ChatPromptTemplate.from_messages(
     ]
 )
 
-# -------------------- Session State --------------------
+# -------------------- Session Memory --------------------
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-# -------------------- Display Chat --------------------
+# -------------------- Display Previous Messages --------------------
 for msg in st.session_state.chat_history:
     if isinstance(msg, HumanMessage):
-        st.chat_message("user").write(msg.content)
+        st.chat_message("user").markdown(msg.content)
     else:
-        st.chat_message("assistant").write(msg.content)
+        st.chat_message("assistant").markdown(msg.content)
 
 # -------------------- User Input --------------------
 query = st.chat_input("Type your message...")
 
+# -------------------- Chat Handling --------------------
 if query:
-    st.chat_message("user").write(query)
+    st.chat_message("user").markdown(query)
 
     prompt = chat_template.invoke(
         {
@@ -59,9 +65,18 @@ if query:
         }
     )
 
-    response = llama.invoke(prompt)
+    # ---- Streaming animation ----
+    response_placeholder = st.chat_message("assistant").empty()
+    full_response = ""
 
-    st.chat_message("assistant").write(response.content)
+    for chunk in llama.stream(prompt):
+        if chunk.content:
+            full_response += chunk.content
+            response_placeholder.markdown(full_response + "▌")
+            time.sleep(0.01)
 
+    response_placeholder.markdown(full_response)
+
+    # ---- Save history ----
     st.session_state.chat_history.append(HumanMessage(content=query))
-    st.session_state.chat_history.append(AIMessage(content=response.content))
+    st.session_state.chat_history.append(AIMessage(content=full_response))

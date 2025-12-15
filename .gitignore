@@ -1,0 +1,8 @@
+# Ignore everything
+*
+
+# Exception: whitelist specific files
+!full_dynamic_customer_support_chatbot.py
+!README.md
+!.gitignore
+!requirements.txt

@@ -1,0 +1,4 @@
+langchain-huggingface
+python-dotenv
+rich
+streamlit

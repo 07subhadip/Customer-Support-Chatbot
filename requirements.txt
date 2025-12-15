@@ -1,4 +1,5 @@
-langchain-huggingface
-python-dotenv
-rich
 streamlit
+langchain
+langchain-huggingface
+huggingface-hub
+python-dotenv

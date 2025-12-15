@@ -16,7 +16,7 @@ st.set_page_config(
 )
 
 st.title("💬 Customer Support Chatbot")
-st.caption("Powered by LLaMA-3.1 + HuggingFace")
+st.caption("Powered by LLaMA-3.1 + HuggingFace | **Created By - Subhadip Hensh**")
 
 # -------------------- Load Model (cached) --------------------
 @st.cache_resource

@@ -1,12 +1,14 @@
 # Dynamic Customer Support Chatbot
 
-An intelligent, console-based customer support assistant powered by **Llama-3.1-8B-Instruct** (via Hugging Face). This chatbot features persistent memory, maintaining context across conversations, and uses a rich terminal interface for a polished user experience.
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://customer-support-chatbot-kxhkv5bmfd427xkd9zefbn.streamlit.app/)
+
+An intelligent customer support assistant powered by **Llama-3.1-8B-Instruct** (via Hugging Face). This chatbot features persistent memory, maintaining context across conversations, and offers a clean, interactive user interface built with **Streamlit**.
 
 ## 🚀 Features
 
 - **Advanced LLM Integration**: Leverages the Meta Llama 3.1 model for high-quality, natural language responses.
-- **Persistent Memory**: Conversational history is saved locally (`chat_history.txt`), allowing the bot to remember previous context even after restarting the script.
-- **Rich Terminal UI**: Utilizes the `rich` library to render Markdown and formatted text directly in the console.
+- **Interactive Web UI**: Built with Streamlit for a responsive and user-friendly chat interface.
+- **Persistent Session Memory**: Maintains conversation context within the active session.
 - **Environment Secure**: API keys are managed securely via `.env` files.
 
 ## 🛠️ Prerequisites
@@ -18,10 +20,8 @@ Before running the chatbot, ensure you have **Python 3.8+** installed. You will 
 Install the necessary dependencies using pip:
 
 ```bash
-pip install streamlit langchain-huggingface python-dotenv rich
+pip install streamlit langchain-huggingface python-dotenv
 ```
-
-_(Note: `streamlit` is imported but the current script runs primarily in the console. Ensure all imports in the script are satisfied.)_
 
 ### API Configuration
 
@@ -35,32 +35,31 @@ HUGGINGFACEHUB_API_TOKEN=your_hugging_face_token_here
 
 ## 💻 Usage
 
-To start the chatbot, simply run the Python script:
+To start the chatbot locally, use the Streamlit CLI:
 
 ```bash
-python fll_dynamic_customer_support_chatbot.py
+streamlit run full_dynamic_customer_support_chatbot.py
 ```
 
-- **Interact**: Type your query at the `You :` prompt.
-- **Exit**: Type `exit`, `end`, or `quit` to terminate the session.
+- **Interact**: Type your query in the chat input box.
+- **Exit**: Close the browser tab to end the session.
 
 ## ⚠️ Cautions and Limitations
 
 Please be aware of the following usage limits and design constraints:
 
-1.  **Local File Storage**:
+1.  **Llama Open Source Limitations**:
 
-    - **Privacy Warning**: Conversation history is stored in plain text in `chat_history.txt` within the same directory. **Do not share this file** if your conversations contain sensitive information.
-    - **Concurrency**: This script is designed for a single local user. Running multiple instances simultaneously may cause conflicts when writing to the history file.
+    - **Inherited Constraints**: As this application is built on top of Llama 3.1, it has the same limitations as the base open-source Llama models. This includes potential bias, knowledge cutoffs, and the possibility of generating incorrect or nonsensical information (hallucinations).
 
 2.  **API Rate Limits**:
 
     - This application uses the free Hugging Face Inference API. You may encounter rate limits or slower response times during peak usage hours.
-    - **Token Limit**: The model is configured with a `max_new_tokens` limit of 2048. Extremely long responses may be truncated.
+    - **Token Limit**: The model is configured with a `max_new_tokens` limit. Extremely long responses may be truncated.
 
-3.  **Model Hallucinations**:
+3.  **Data Privacy**:
 
-    - As with all Large Language Models (LLMs), Llama 3.1 can make mistakes or "hallucinate" facts. Always verify critical information provided by the chatbot, especially for technical or financial support scenarios.
+    - **Session Storage**: While this demo runs in the browser, always be cautious when sharing sensitive personal information with any AI chatbot.
 
 4.  **Memory Management**:
-    - The `chat_history.txt` file grows indefinitely. If the file becomes too large, it may exceed the model's context window, causing errors. It is recommended to manually archive or delete `chat_history.txt` periodically to reset the context.
+    - Conversation history is held in the session state. Refreshing the page will reset the conversation.
